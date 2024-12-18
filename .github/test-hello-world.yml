@@ -1,0 +1,34 @@
+name: Hello World PR Workflow
+
+on:
+  workflow_dispatch: # Manual trigger for testing
+
+jobs:
+  create-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Create a new branch and add hello-world.txt
+      - name: Create hello-world.txt
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b feature/hello-world
+          echo "Hello, World!" > hello-world.txt
+          git add hello-world.txt
+          git commit -m "Add hello-world.txt"
+          git push origin feature/hello-world
+
+      # Step 3: Create a Pull Request
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: feature/hello-world
+          title: "Add Hello World File"
+          body: |
+            This is a test pull request created by GitHub Actions to add a `hello-world.txt` file.
